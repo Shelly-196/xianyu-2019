@@ -1,10 +1,24 @@
 <template>
   <div>
+    <Header/>
     <nuxt />
+    <!-- 脚部 -->
+    <Footer/>
   </div>
 </template>
+<script>
+import Header from "@/components/header.vue"
+import "@/assets/index.less"
+import Footer from "@/components/footer.vue"
+export default {
+  components:{
+    Header,
+    Footer
+  }
+}
+</script>
 
-<style>
+<style lang="less">
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -16,40 +30,18 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+*{
   margin: 0;
+  padding: 0;
 }
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
+ul,li,ol,dl{
+  list-style: none
+}
+a{
   text-decoration: none;
-  padding: 10px 30px;
+  color: inherit;
 }
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+i,em{
+  font-style: normal
 }
 </style>

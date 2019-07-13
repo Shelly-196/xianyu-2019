@@ -1,5 +1,7 @@
 <template>
-    <div>登录</div>
+    <div class="container">
+        
+    </div>
 </template>
 <script>
 export default {
@@ -7,5 +9,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
+.container{
+    height: 700px;
+}
 </style>
