@@ -2,7 +2,6 @@
   <div>
     <Header/>
     <nuxt />
-    <!-- 脚部 -->
     <Footer/>
   </div>
 </template>

@@ -15,25 +15,62 @@
         <nuxt-link to="/hotel">酒店</nuxt-link>
         <nuxt-link to="/air">国内机票</nuxt-link>
       </el-row>
+      <!-- 消息区域 -->
+      <el-dropdown>
+        <el-button class="header_bell">
+          <i class="el-icon-bell"></i>
+          <span>消息</span>
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>消息区域</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <!-- 头部登录及用户部分 -->
       <div class="header_login">
-        <nuxt-link class="login" to="/user/login">注册/登录</nuxt-link>
-        <nuxt-link class="user" v-if="false"></nuxt-link>
+        <div class="user" v-if="$store.state.user.userInfo.token">
+          <span class="avatar">
+            <img :src="$axios.defaults.baseURL+$store.state.user.userInfo.user.defaultAvatar" alt="">
+          </span>
+          <div class="nickname">
+            <el-dropdown>
+              <span class="el-dropdown-link">
+                {{$store.state.user.userInfo.user.nickname}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </div>
+        <nuxt-link class="login" to="/user/login" v-else>注册 / 登录</nuxt-link>
       </div>
     </el-row>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods:{
+    handleLogout(){
+      this.$store.commit('user/clearUserInfo')
+      this.$message.success("退出成功")
+      setTimeout(() => {
+        this.$router.push("/user/login")        
+      }, 1000);
+    }
+  }
+};
 </script>
 
 <style lang="less">
 .header {
   height: 60px;
   line-height: 60px;
-//   border-bottom: 1px solid #ccc;
-  box-shadow: 0 2px 0 #ccc;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 3px 0 #f5f5f5;
   box-sizing: border-box;
   .w {
     margin: 0 auto;
@@ -68,6 +105,48 @@ export default {};
     /deep/ .nuxt-link-exact-active {
       background-color: #409eff;
       color: #fff !important;
+    }
+  }
+  .header_bell {
+    &:hover {
+      background-color: #fff;
+      color: inherit;
+    }
+    cursor: pointer;
+    margin-right: 10px;
+    outline: none;
+    border: none;
+  }
+  .header_login {
+    a {
+      &:hover {
+        color: #409eff;
+      }
+    }
+    .user{
+        .avatar{
+        margin-right: 10px;
+        cursor: pointer;
+        display: inline-block;
+        box-sizing: border-box;
+        height: 32px;
+        width: 32px;
+        // background-size: contain;
+        img{
+          display: inline-block;
+          padding: 2px;
+          border-radius: 50%;
+          width: 100%;
+          border: 2px solid #fff;
+          vertical-align: middle;
+          &:hover{
+          border-color: #409eff;
+          }
+        }
+      }
+      .nickname{
+        display: inline-block;
+      }
     }
   }
 }
