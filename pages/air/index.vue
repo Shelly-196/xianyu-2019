@@ -35,10 +35,10 @@
         <!-- 特价机票商品展览区域 -->
         <div class="saleProArea">
           <el-form class="salePro" v-model="saleProList" v-for="(item,index) in saleProList" :key="index">
-            <a href="#">
-              <img :src="item.img" alt="">
+            <a :href="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`">
+              <img :src="item.cover" alt="">
               <div class="saleProIntro">
-                <span class="city">{{item.city}}</span>
+                <span class="city">{{item.departCity}}-{{item.destCity}}</span>
                 <span class="price">￥{{item.price}}</span>
               </div>
             </a>
@@ -54,15 +54,19 @@ export default {
   components:{
     searchForm
   },
+  mounted(){
+    this.$axios({
+      url:'/airs/sale'
+    }).then(res=>{
+      // console.log(res,'特价机票')
+      const {data} = res.data
+      this.saleProList=data
+    })
+  },
   data() {
     return {
       // 特价机票商品列表
-      saleProList:[
-        {img:'https://imgsrc.baidu.com/baike/pic/item/a71ea8d3fd1f41340d8f3dec281f95cad0c85ee3.jpg',city:'广州-上海',price:'699'},
-        {img:'https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=d4e2f29522381f309a198aab99004c67/6a63f6246b600c33cd891e65104c510fd8f9a1af.jpg',city:'广州-上海',price:'699'},
-        {img:'https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=9154c841bcfd5266a32b3b169b199799/3812b31bb051f8199687c7e0d0b44aed2f73e7fe.jpg',city:'广州-上海',price:'699'},
-        {img:'https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=a1b035c61a38534388cf8023a312b01f/9c16fdfaaf51f3de20157fce9eeef01f3b2979f1.jpg',city:'广州-上海',price:'699'}
-      ]
+      saleProList:[]
     };
   }
 };

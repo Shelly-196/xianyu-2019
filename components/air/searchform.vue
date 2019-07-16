@@ -1,3 +1,21 @@
+Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@Shelly-196 
+0
+0 0 Shelly-196/xianyu-2019
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Security  Insights  Settings
+xianyu-2019/components/air/searchform.vue
+@Shelly-196 Shelly-196 完成机票搜索功能
+70f5951 3 hours ago
+261 lines (258 sloc)  7.6 KB
+    
 <template>
   <div class="searchForm">
     <!-- tab栏头部 -->
@@ -87,21 +105,21 @@ export default {
         this.$message.warning("目前仅app支持往返机票功能");
       }
     },
-    // 搜索出发城市下拉提示，当input输入框的值变化时触发
     // value: 输入框的值
     // cb： 回调函数，这个回调函数是必须要要调用，
     // cb函数必须要接收一个数组，数组中每一项必须是对象, 对象中必须要有value属性
-    queryDepartSearch(value, cb) {
-      // 1.不输入则不出现下拉框
-      if (!value) {
-        cb([]);
+    queryCity(queryString){
+      return new Promise((resolve,reject)=>{
+        // 1.不输入则不出现下拉框
+      if (!queryString) {
+        resolve([]);
         return;
       }
       // 2.请求下拉框内容
       this.$axios({
         url: "/airs/city",
         params: {
-          name: value
+          name: queryString
         }
       }).then(res => {
         // console.log(res,'发起下拉框请求')
@@ -112,38 +130,27 @@ export default {
           v.value = v.name.replace("市", "");
           return v;
         });
-        // 默认选中第一个
-        this.airTabForm.departCity = selectArray[0].value;
-        this.airTabForm.departCode = selectArray[0].sort;
-        cb(selectArray);
+        resolve(selectArray);
       });
+      })
+    },
+    // 搜索出发城市下拉提示，当input输入框的值变化时触发
+    async queryDepartSearch(value,cb) {
+      const res = await this.queryCity(value)
+      if(res.length>0){
+        // 默认选中第一个
+        this.airTabForm.departCity = res[0].value;
+        this.airTabForm.departCode = res[0].sort;
+      }
     },
     // 搜索到达城市下拉提示，当输入框的值变化时触发
-    queryDescSearch(value, cb) {
-      // 无输入时不出现下拉提示
-      if (!value) {
-        cb([]);
-        return;
+    async queryDescSearch(value,cb) {
+      const res = await this.queryCity(value)
+      if(res.length>0){
+        // 默认选中第一个
+        this.airTabForm.destCity = res[0].value;
+        this.airTabForm.destCode = res[0].sort;
       }
-      // 输入时发起下拉提示请求
-      this.$axios({
-        url: "/airs/city",
-        params: {
-          name: value
-        }
-      }).then(res => {
-        // 建议城市列表
-        const { data } = res.data;
-        // 给下拉框数组赋值
-        const selectArray = data.map(v => {
-          v.value = v.name.replace("市", "");
-          return v;
-        });
-        cb(selectArray);
-        // 默认选中第一个建议城市
-        this.airTabForm.destCity = selectArray[0].value;
-        this.airTabForm.destCode = selectArray[0].sort;
-      });
     },
     // 选择出发城市列表值时触发
     handleSelectDepartCity(item) {
@@ -181,13 +188,6 @@ export default {
         Object.keys(rules).forEach(v=>{
             // 只要valid验证不通过就返回
             if(!valid) return;
-            // 如果valid通过了，则跳转到对应页面
-            if(valid){
-                this.$router.push({
-                    path:'/air/flights',
-                    query:this.airTabForm
-                })
-            }
             // 如果输入框为空，则提示
             // console.log(rules[v].value,'啦啦啦')
             if(!rules[v].value){
@@ -195,6 +195,13 @@ export default {
                 this.$message.warning(rules[v].message)
             }
         })
+            // 如果valid通过了，则跳转到对应页面
+            if(valid){
+                this.$router.push({
+                    path:'/air/flights',
+                    query:this.airTabForm
+                })
+            }
     }
   }
 };
@@ -258,3 +265,15 @@ export default {
 }
 </style>
 
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
