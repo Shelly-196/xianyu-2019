@@ -26,20 +26,38 @@
     <!-- 历史查询 -->
     <div class="history">
         <el-row class="hisTitle">历史查询</el-row>
-        <el-row class="hisItem">
+        <nuxt-link v-for="(item,index) in airHistory" :key="index" 
+        :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`">
+          <el-row class="hisItem">
             <el-col :span="12">
-                <el-row>广州-上海</el-row>
-                <el-row class="date">2019-07-04</el-row>
+                <el-row>{{item.departCity}}-{{item.destCity}}</el-row>
+                <el-row class="date">{{item.departDate}}</el-row>
             </el-col>
             <el-col :span="12">
                 <div class="chooseBtn">选择</div>
             </el-col>
         </el-row>
+        </nuxt-link>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      airHistory:[]
+    }
+  },
+  props:{
+    data:{
+      type:Object,
+      default:{}
+    }
+  },
+  mounted(){
+    this.airHistory=JSON.parse(localStorage.getItem("air"||'[]'))
+  }
+};
 </script>
 <style lang="less">
 .upper {

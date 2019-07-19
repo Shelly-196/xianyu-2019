@@ -202,6 +202,13 @@ export default {
                     query:this.airTabForm
                 })
             }
+            // 把当前搜索记录存储在本地
+            const air = JSON.parse(localStorage.getItem("air"))||[]
+            air.unshift(this.airTabForm)
+            if(air.length>5){
+              air.length=5
+            }
+            localStorage.setItem('air',JSON.stringify(air))
     }
   }
 };

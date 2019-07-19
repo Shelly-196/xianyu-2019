@@ -5,7 +5,7 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <div>
-            <FlightsFilter :data="flightsData"/>
+          <FlightsFilter :data="cacheFlightsData" @changeFlights="changeFlights" />
         </div>
 
         <!-- 航班头部布局 -->
@@ -32,7 +32,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
-        <FlightsAside/>
+        <FlightsAside :data="cacheFlightsData"/>
       </div>
     </el-row>
   </section>
@@ -46,6 +46,12 @@ import FlightsAside from "@/components/air/flightsAside"
 export default {
   data() {
     return {
+        // 缓存数据
+        cacheFlightsData:{
+          flights:[],
+          info:{},
+          options:{}
+        },
         // 航班信息列表
       flightsData: {
           flights:[],
@@ -63,6 +69,15 @@ export default {
     FlightList,
     FlightsFilter,
     FlightsAside
+  },
+  /* watch:{
+    $route(){
+      this.getData();
+    }
+  }, */
+  beforeRouteUpdate(to,from,next){
+    next(),
+    this.getData()
   },
   computed:{
     // 获取当前页展示的数据
@@ -83,8 +98,17 @@ export default {
         this.flightsData = res.data;
         this.flightslist = res.data.flights;
         this.total=res.data.flights.length
+        this.cacheFlightsData ={...res.data}
         console.log(this.flightsData, "机票列表数组");
       });
+    },
+    // 传递给子组件用于修改数据列表的事件
+    changeFlights(arr){
+        if(arr){
+            this.pageIndex=1
+            this.flightsData.flights=arr
+            this.flightsData.total=arr.length
+        }
     },
     // 分页
     // 切换条数时触发

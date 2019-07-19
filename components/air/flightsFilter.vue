@@ -12,28 +12,28 @@
       </el-col>
       <el-col :span="4">
         <div class="grid-content-light">
-          <el-select v-model="airport" placeholder="起飞机场" size="mini">
+          <el-select @change="handleAirport" v-model="airport" placeholder="起飞机场" size="mini">
             <el-option v-for="(item,index) in data.options.airport" :key="index" :label="item" :value="item"></el-option>
           </el-select>
         </div>
       </el-col>
       <el-col :span="4">
         <div class="grid-content-light">
-          <el-select v-model="flightTimes" placeholder="起飞时间" size="mini">
+          <el-select @change="handleFlightTimes" v-model="flightTimes" placeholder="起飞时间" size="mini">
             <el-option v-for="(item,index) in data.options.flightTimes" :key="index" :label="`${item.from}:00-${item.to}:00`" :value="item"></el-option>
           </el-select>
         </div>
       </el-col>
       <el-col :span="4">
         <div class="grid-content-light">
-          <el-select v-model="company" placeholder="航空公司" size="mini">
+          <el-select @change="handleCompany" v-model="company" placeholder="航空公司" size="mini">
             <el-option v-for="(item,index) in data.options.company" :key="index" :label="item" :value="item"></el-option>
           </el-select>
         </div>
       </el-col>
       <el-col :span="4">
         <div class="grid-content-light">
-          <el-select v-model="airSize" placeholder="机型" size="mini">
+          <el-select @change="handleAirSize" v-model="airSize" placeholder="机型" size="mini">
             <el-option v-for="(item,index) in sizeOptions" :key="index" :label="item.name" :value="item.size"></el-option>
           </el-select>
         </div>
@@ -42,7 +42,7 @@
     <!-- 筛选按钮 -->
     <div class="filterCancel">
       筛选：
-      <el-button type="primary" round plain size="mini">撤销</el-button>
+      <el-button @click="resetDataList" type="primary" round plain size="mini">撤销</el-button>
     </div>
   </div>
 </template>
@@ -68,6 +68,47 @@ export default {
            type:Object,
            default:{}
        }
+   },
+   methods:{
+    //    选择机场时触发
+       handleAirport(value){
+        //    根据选项返回一个新的数组给父组件
+        const arr = this.data.flights.filter(v=>{
+            return v.org_airport_name===value
+        })
+        // 得到一个过滤后的数组，传递回去给父组件
+        this.$emit("changeFlights",arr)
+       },
+    //    选择出发时间时触发
+       handleFlightTimes(value){
+        //    console.log(value,'出发时间')
+           const arr = this.data.flights.filter(v=>{
+                return +value.from<= +v.dep_time.split(':')[0] && +value.to>= +v.dep_time.split(':')[0]
+            })
+            this.$emit("changeFlights",arr)
+       },
+    // 选择航空公司时触发
+        handleCompany(value){
+            const arr = this.data.flights.filter(v=>{
+            return v.airline_name===value
+            })
+            this.$emit("changeFlights",arr)
+        },
+    // 选择机型时触发
+        handleAirSize(value){
+            const arr = this.data.flights.filter(v=>{
+            return v.plane_size===value
+            })
+            this.$emit("changeFlights",arr)
+        },
+        // 撤销条件
+        resetDataList(){
+          this.airport="",
+          this.company="",
+          this.flightTimes="",
+          this.sizeOptions='',
+          this.$emit('changeFlights',this.data.flights)
+        }
    }
 };
 </script>

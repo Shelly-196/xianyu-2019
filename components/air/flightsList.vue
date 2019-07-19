@@ -40,7 +40,7 @@
             </el-col>
             <el-col :span="5" class="price">{{item.settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button @click="handleChooseTicket(data.id,item.seat_xid)" type="warning" size="mini">选定</el-button>
               <p>剩余：{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -77,6 +77,17 @@ export default {
         }
         // 返回‘2时20分’的格式
         return `${Math.floor(rank/60)}时${rank%60}分`
+      }
+    },
+    methods:{
+      handleChooseTicket(id,seat_xid){
+        this.$router.push({
+          path:'/air/order',
+          query:{
+            id,
+            seat_xid
+          }
+        })
       }
     }
 };
