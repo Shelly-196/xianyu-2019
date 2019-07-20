@@ -24,6 +24,7 @@ export const mutations = {
 // 第一个参数是store对象
 // 第二个参数
 export const actions = {
+  // 登录
   login({ commit }, data) {
     this.$axios({
       method: "post",
@@ -34,6 +35,7 @@ export const actions = {
       commit("setUserInfo", res.data);
     });
   },
+  // 注册
   register({ commit }, data) {
     this.$axios({
       method: "post",
@@ -46,5 +48,21 @@ export const actions = {
         this.$router.back();
       }
     });
+  },
+  // 发送验证码
+  sendCaptcha(store,phoneNumber){
+    return this.$axios({
+      method: "post",
+      url: "captchas",
+      data:{
+        tel:phoneNumber
+      }
+    }).then(res => {
+      // console.log(res.data)
+      if (res.status === 200) {
+        const { code } = res.data;
+        return code
+      }
+    }); 
   }
 };

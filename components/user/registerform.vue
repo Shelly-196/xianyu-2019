@@ -64,22 +64,13 @@ export default {
         this.$message.warning("请输入用户手机号")
         return;
       }
-      this.$axios({
-        method: "post",
-        url: "captchas",
-        data: {
-          tel:this.registerForm.username
-        }
-      }).then(res => {
-        // console.log(res.data)
-        if (res.status === 200) {
-          const { code } = res.data;
-          // 弹框提示
-          this.$alert(`验证码为${code}`, "提示", {
-            confirmButtonText: "确定"
-          });
-        }
-      }); 
+      this.$store.dispatch("user/sendCaptcha",this.registerForm.username)
+      .then(code=>{
+        // 弹框提示
+        this.$alert(`验证码为${code}`, "提示", {
+          confirmButtonText: "确定"
+        });
+      })
     },
     // 注册事件
     handleRegister() {
